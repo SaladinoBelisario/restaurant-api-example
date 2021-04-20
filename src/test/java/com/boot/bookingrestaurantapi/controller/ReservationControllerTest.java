@@ -1,12 +1,10 @@
 package com.boot.bookingrestaurantapi.controller;
 
 import com.boot.bookingrestaurantapi.controllers.ReservationController;
-import com.boot.bookingrestaurantapi.controllers.RestaurantController;
 import com.boot.bookingrestaurantapi.exceptions.BookingException;
 import com.boot.bookingrestaurantapi.jsons.CreateReservationRest;
 import com.boot.bookingrestaurantapi.responses.BookingResponse;
 import com.boot.bookingrestaurantapi.services.ReservationService;
-import com.boot.bookingrestaurantapi.services.RestaurantService;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.InjectMocks;
