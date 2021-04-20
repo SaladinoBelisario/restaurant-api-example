@@ -31,6 +31,7 @@ public class ReservationControllerTest {
     private  static final String OK = "OK";
     private  static final String LOCATOR = "BURGER2";
 
+
     private static final CreateReservationRest CREATE_RESERVATION_REST = new CreateReservationRest();
 
 
