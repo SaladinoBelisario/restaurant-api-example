@@ -31,6 +31,7 @@ public class ReservationServiceTest {
 
     private static final Restaurant RESTAURANT = new Restaurant();
     private static final Turn TURN = new Turn();
+    private static final Reservation RESERVATION = new Reservation();
 
     private static final Long RESTAURANT_ID = 1L;
     private  static final String DESCRIPTION = "We sell burgers";
@@ -41,10 +42,8 @@ public class ReservationServiceTest {
     private  static final Long PERSON = 20L;
     private  static final Long TURN_ID = 6L;
 
-    private  static final String SUCCESS_STATUS = "Succes";
-    private  static final String SUCCESS_CODE = "200 OK";
-    private  static final String OK = "OK";
     private  static final String LOCATOR = "BURGER2";
+    private  static final String TURN_STRING = "TURN_12_004";
 
     public static final List<Turn> TURN_LIST = new ArrayList<>();
     public static final List<Board> BOARDS_LIST = new ArrayList<>();
@@ -53,7 +52,9 @@ public class ReservationServiceTest {
     private static final Optional<Restaurant> OPTIONAL_RESTAURANT = Optional.of(RESTAURANT);
     private static final Optional<Restaurant> OPTIONAL_RESTAURANT_EMPTY = Optional.empty();
     private static final Optional<Turn> OPTIONAL_TURN = Optional.of(TURN);
+    private static final Optional<Turn> OPTIONAL_TURN_EMPTY = Optional.empty();
     private static final Optional<Reservation> OPTIONAL_RESERVATION_EMPTY = Optional.empty();
+    private static final Optional<Reservation> OPTIONAL_RESERVATION = Optional.of(RESERVATION);
 
     @Mock
     private RestaurantRepository restaurantRepository;
@@ -86,6 +87,13 @@ public class ReservationServiceTest {
         RESTAURANT.setTurns(TURN_LIST);
         RESTAURANT.setBoards(BOARDS_LIST);
         RESTAURANT.setReservations(RESERVATIONS_LIST);
+
+        RESERVATION.setId(RESTAURANT_ID);
+        RESERVATION.setDate(DATE);
+        RESERVATION.setRestaurant(RESTAURANT);
+        RESERVATION.setPerson(PERSON);
+        RESERVATION.setLocator(LOCATOR);
+        RESERVATION.setTurn(TURN_STRING);
     }
 
     @Test
@@ -102,6 +110,40 @@ public class ReservationServiceTest {
     @Test (expected = BookingException.class)
     public void createReservationFindByIdTestError() throws BookingException {
         Mockito.when(restaurantRepository.findById(RESTAURANT_ID)).thenReturn(OPTIONAL_RESTAURANT_EMPTY);
+
+        reservationService.createReservation(RESERVATION_REST);
+        fail();
+    }
+
+    @Test (expected = BookingException.class)
+    public void createReservationTurnByIdTestError() throws BookingException {
+        Mockito.when(restaurantRepository.findById(RESTAURANT_ID)).thenReturn(OPTIONAL_RESTAURANT);
+        Mockito.when(turnRepository.findById(TURN_ID)).thenReturn(OPTIONAL_TURN_EMPTY);
+        Mockito.when(reservationRepository.findByTurnAndRestaurantId(TURN.getName(), RESTAURANT.getId()))
+                .thenReturn(OPTIONAL_RESERVATION);
+        Mockito.when(reservationRepository.save(Mockito.any(Reservation.class))).thenReturn(new Reservation());
+
+        reservationService.createReservation(RESERVATION_REST);
+        fail();
+    }
+
+    @Test (expected = BookingException.class)
+    public void createReservationTurnAndRestaurantTestError() throws BookingException {
+        Mockito.when(restaurantRepository.findById(RESTAURANT_ID)).thenReturn(OPTIONAL_RESTAURANT);
+        Mockito.when(turnRepository.findById(TURN_ID)).thenReturn(OPTIONAL_TURN_EMPTY);
+        Mockito.when(reservationRepository.save(Mockito.any(Reservation.class))).thenReturn(new Reservation());
+
+        reservationService.createReservation(RESERVATION_REST);
+        fail();
+    }
+
+    @Test (expected = BookingException.class)
+    public void createReservationInternalServerErrorTest() throws BookingException {
+        Mockito.when(restaurantRepository.findById(RESTAURANT_ID)).thenReturn(OPTIONAL_RESTAURANT);
+        Mockito.when(turnRepository.findById(TURN_ID)).thenReturn(OPTIONAL_TURN);
+        Mockito.when(reservationRepository.findByTurnAndRestaurantId(TURN.getName(), RESTAURANT.getId()))
+                .thenReturn(OPTIONAL_RESERVATION_EMPTY);
+        Mockito.when(reservationRepository.save(Mockito.any(Reservation.class))).thenThrow(BookingException.class);
 
         reservationService.createReservation(RESERVATION_REST);
         fail();
