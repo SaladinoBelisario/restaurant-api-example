@@ -1,7 +1,6 @@
 package com.boot.bookingrestaurantapi.controller;
 
 import com.boot.bookingrestaurantapi.controllers.RestaurantController;
-import com.boot.bookingrestaurantapi.entities.Restaurant;
 import com.boot.bookingrestaurantapi.exceptions.BookingException;
 import com.boot.bookingrestaurantapi.jsons.RestaurantRest;
 import com.boot.bookingrestaurantapi.jsons.TurnRest;
@@ -31,6 +30,7 @@ public class RestaurantControllerTest {
     private  static final String OK = "OK";
 
     public static final RestaurantRest RESTAURANT_REST = new RestaurantRest();
+    public static final List<RestaurantRest> RESTAURANT_REST_LIST = new ArrayList<>();
     public static final List<TurnRest> TURN_LIST = new ArrayList<>();
 
     @Mock
@@ -60,5 +60,14 @@ public class RestaurantControllerTest {
         assertEquals(SUCCESS_CODE, response.getCode());
         assertEquals(OK, response.getMessage());
         assertEquals(RESTAURANT_REST, response.getData());
+    }
+
+    @Test
+    public void getRestaurantsTest() throws BookingException {
+        final BookingResponse<List<RestaurantRest>> response = restaurantController.getRestaurants();
+        assertEquals( SUCCESS_STATUS, response.getStatus());
+        assertEquals(SUCCESS_CODE, response.getCode());
+        assertEquals(OK, response.getMessage());
+        assertEquals(RESTAURANT_REST_LIST, response.getData());
     }
 }
